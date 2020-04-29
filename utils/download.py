@@ -10,6 +10,9 @@ def download(url, config, logger=None):
         f"http://{host}:{port}/",
         params=[("q", f"{url}"), ("u", f"{config.user_agent}")])
     if resp:
+        if not resp.content:
+            logger.error(f"EMPTYCONTENT in resp: {resp}  url: {url}.")
+            return Response({"error": f"EMPTYCONTENT in resp: {resp}  url: {url}.", "status": resp.status_code, "url": url})
         return Response(cbor.loads(resp.content))
     logger.error(f"Spacetime Response error {resp} with url {url}.")
     return Response({
